@@ -30,21 +30,25 @@ pipeline {
     //   }
     // }
     stage('Build and Push Docker Image') {
-      environment {
+    environment {
         DOCKER_IMAGE = "ultimate-cicd:${BUILD_NUMBER}"
-        // DOCKERFILE_LOCATION = "spring-boot-app/Dockerfile"
         REGISTRY_CREDENTIALS = credentials('docker-cred')
-      }
-      steps {
+    }
+    steps {
         script {
+            echo "Building Docker image ${DOCKER_IMAGE}"
             sh 'cd spring-boot-app && docker build -t ${DOCKER_IMAGE} .'
+            
+            echo "Pushing Docker image ${DOCKER_IMAGE} to registry"
             def dockerImage = docker.image("${DOCKER_IMAGE}")
-            docker.withRegistry('https://index.docker.io/v1/', "docker-cred") {
+            
+            docker.withRegistry('https://index.docker.io/v1/', REGISTRY_CREDENTIALS) {
                 dockerImage.push()
             }
         }
-      }
     }
+}
+
     stage('Update Deployment File') {
         environment {
             GIT_REPO_NAME = "jenkins-install"
