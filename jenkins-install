@@ -7,3 +7,5 @@
 # git push -u origin main
 
 echo "hello world"
+
+echo "local"
