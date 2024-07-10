@@ -1,0 +1,40 @@
+//Create an instance
+//create an IAM user with EKS Access(Given in the file)
+//Install eksctl
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+sudo mv /tmp/eksctl /usr/local/bin
+//install kubectl
+sudo apt-get update
+sudo apt-get install -y ca-certificates curl
+curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-archive-keyring.gpg
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+
+
+//Create Nodes
+eksctl create cluster --region=ap-south-1 --name=knote
+kubectl get nodes
+mkdir kube
+(create the file knote.yaml as mentioned in the folder)
+kubectl apply -f kube
+kubectl get pods --watch
+kubectl get service knote
+// do a  curl to verify in the local machine and also the external IP Address(and port)
+//to Scale up
+kubectl scale --replicas=10 deployment knote
+kubectl get pods --all-namespaces // to check all namespaces
+
+
+*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/
+Note: Error: error: exec plugin: invalid apiVersion "client.authentication.k8s.io/v1alpha1"
+Fix:
+1) pip3 install awscli --upgrade --user
+2) aws eks update-kubeconfig --name knote --region ap-south-1
+*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/
+//Delete Nodes
+eksctl delete cluster --region=ap-south-1 --name=knote
+
+*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/
+Time Taken:
+2022-05-22 08:52:56  ->2022-05-22 09:08:42 (Approx 16 Mins.)
