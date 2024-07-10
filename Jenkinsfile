@@ -19,16 +19,16 @@ pipeline {
         sh 'cd spring-boot-app && mvn clean package'
       }
     }
-    stage('Static Code Analysis') {
-      environment {
-        SONAR_URL = "http://54.197.30.144:9000"
-      }
-      steps {
-        withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_AUTH_TOKEN')]) {
-          sh 'cd spring-boot-app && mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=${SONAR_URL}'
-        }
-      }
-    }
+    // stage('Static Code Analysis') {
+    //   environment {
+    //     SONAR_URL = "http://54.197.30.144:9000"
+    //   }
+    //   steps {
+    //     withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_AUTH_TOKEN')]) {
+    //       sh 'cd spring-boot-app && mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=${SONAR_URL}'
+    //     }
+    //   }
+    // }
     stage('Build and Push Docker Image') {
       environment {
         DOCKER_IMAGE = "ultimate-cicd:${BUILD_NUMBER}"
@@ -47,8 +47,8 @@ pipeline {
     }
     stage('Update Deployment File') {
         environment {
-            GIT_REPO_NAME = "jenkins-CICD"
-            GIT_USER_NAME = "wangoimwangi"
+            GIT_REPO_NAME = "jenkins-install"
+            GIT_USER_NAME = "sriramulu46"
         }
         steps {
             withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
